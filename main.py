@@ -1,5 +1,5 @@
-from user_manager import *
-user = UserManager()
+from utils import user_manager
+user = user_manager.UserManager()
 
 def main():
     print("Welcome to Dice Roll Game!")
@@ -21,7 +21,6 @@ def main():
     else:
         print("No")
 
-
 if __name__ == "__main__":
     user.load_user()
-    main() 
+    main()

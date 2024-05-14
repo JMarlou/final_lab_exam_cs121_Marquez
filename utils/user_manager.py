@@ -1,16 +1,17 @@
-from user import *
+from .user import User
 
 class UserManager:
-
     user_accounts = {}
 
     def load_user(self):
         try:
-            with open('users.txt', 'r') as f:
-                self.user_accounts = eval(f.read())
+            with open("user.txt", 'r') as f:
+                for line in f:
+                    username, password = line.strip().split(',')
+                    self.users[username] = password
         except FileNotFoundError:
-            self.user_accounts = {}
-
+            print("User file not found.")
+        
     def save_users(self):
         with open('users.txt', 'w') as f:
             print(self.user_accounts, file=f)
