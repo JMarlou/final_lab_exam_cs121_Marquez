@@ -21,9 +21,8 @@ class UserManager:
             input()
             return
         else:
-            self.user_accounts[username]
             print("Successfully Registered!")
-        self.user_accounts[username] = User(username, password)
+            self.user_accounts[username] = User(username, password)
         
 
     def login():
