@@ -1,5 +1,5 @@
 from user_manager import *
-User = UserManager()
+user = UserManager()
 
 def main():
     print("Welcome to Dice Roll Game!")
@@ -10,17 +10,18 @@ def main():
     choice = input("Action: ")
 
     if choice == '1':
-        User.register()
+        user.register()
+        user.save_users()
         main()
     elif choice == '2':
-        User.login()
+        user.login()
     elif choice == '4':
-        for name in User.user_accounts.items():
+        for name in user.user_accounts.items():
             print(f"{name}")
     else:
         print("No")
 
 
 if __name__ == "__main__":
-
-	main() 
+    user.load_user()
+    main() 
