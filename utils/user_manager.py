@@ -5,16 +5,19 @@ class UserManager:
 
     def load_user(self):
         try:
-            with open("user.txt", 'r') as f:
+            with open("users.txt", 'r') as f:
                 for line in f:
-                    username, password = line.strip().split(',')
-                    self.users[username] = password
+                    user = line.strip().split(',')
+                    self.user_accounts[user[0]] = User(user[0], user[1])
         except FileNotFoundError:
             print("User file not found.")
+        except Exception as e:
+            print(f"Error loading users: {e}")
         
     def save_users(self):
         with open('users.txt', 'w') as f:
-            print(self.user_accounts, file=f)
+            for username, password in self.user_accounts.items():
+                f.write(f'{username},{password.password}\n')
 
     def validate_username(self, username, password):
         if username in self.user_accounts:
