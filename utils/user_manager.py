@@ -1,4 +1,6 @@
 from .user import User
+from .dice_game import DiceGame
+dice = DiceGame()
 
 class UserManager:
     user_accounts = {}
@@ -23,12 +25,13 @@ class UserManager:
         if username in self.user_accounts:
             if self.user_accounts[username].password == password:
                 print("Login Successfully")
+                return True
             else:
                 print("Wrong Password!")
-                return
+                return False
         else:
             print("Invalid Username")
-            return
+            return False
 
     def register(self):
         username = input("Enter Username(at least 4 characters): ")
@@ -49,14 +52,34 @@ class UserManager:
                     print("Registration Successful!\n")
                     self.user_accounts[username] = User(username, password)
 
+    def login_menu(self):
+        dice.load_scores()
+        print(f"Welcome!")
+        print("Menu: ")
+        print("1. Start Game")
+        print("2. Show top scores")
+        print("3. Logout")
+
+        choice = input("Choose Action: ")
+
+        if choice == '1':
+            dice.play_game()
+        elif choice == '2':
+            dice.show_top_score()
+        elif choice == '3':
+            pass
+        else:
+            print("Invalid Input")
+            self.login_menu()
+
     def login(self):
         username = input("Enter Username: ")
         password = input("Enter Password: ")
         
         if self.validate_username(username, password):
-            print("Login Successfully")
-            return True
-
+            self.login_menu()
         else:
             return False
+
+
     
