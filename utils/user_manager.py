@@ -58,6 +58,7 @@ class UserManager:
         
         if self.validate_username(username, password):
             dice.menu(username)
+            return
         else:
             return False
 
