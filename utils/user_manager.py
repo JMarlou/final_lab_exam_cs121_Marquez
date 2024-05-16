@@ -48,7 +48,6 @@ class UserManager:
                 else:
                     print("Registration Successful!\n")
                     self.user_accounts[username] = User(username, password)
-        
 
     def login(self):
         username = input("Enter Username: ")
@@ -57,7 +56,7 @@ class UserManager:
         if self.validate_username(username, password):
             print("Login Successfully")
             return True
+
         else:
             return False
-
     
