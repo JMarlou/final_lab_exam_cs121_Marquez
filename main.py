@@ -20,7 +20,6 @@ def main():
     else:
         print("Invalid Input")
             
-
 if __name__ == "__main__":
     user.load_user()
     main()

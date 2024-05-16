@@ -24,7 +24,7 @@ class UserManager:
     def validate_username(self, username, password):
         if username in self.user_accounts:
             if self.user_accounts[username].password == password:
-                print("Login Successfully")
+                print("Login Successfully\n")
                 return True
             else:
                 print("Wrong Password!")
@@ -52,32 +52,12 @@ class UserManager:
                     print("Registration Successful!\n")
                     self.user_accounts[username] = User(username, password)
 
-    def login_menu(self):
-        dice.load_scores()
-        print(f"Welcome!")
-        print("Menu: ")
-        print("1. Start Game")
-        print("2. Show top scores")
-        print("3. Logout")
-
-        choice = input("Choose Action: ")
-
-        if choice == '1':
-            dice.play_game()
-        elif choice == '2':
-            dice.show_top_score()
-        elif choice == '3':
-            pass
-        else:
-            print("Invalid Input")
-            self.login_menu()
-
     def login(self):
         username = input("Enter Username: ")
         password = input("Enter Password: ")
         
         if self.validate_username(username, password):
-            self.login_menu()
+            dice.menu(username)
         else:
             return False
 
