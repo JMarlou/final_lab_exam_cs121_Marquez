@@ -26,13 +26,29 @@ class DiceGame:
                         self.user_score[username].append(Score(username, points, wins, gameID))
 
     def save_scores(self):
-        with open('scores.txt', 'w') as f:
+        with open('scores.txt', 'a') as f:
             for scores in self.user_score.values():
                 for score in scores:
                     f.write(f"{score.username},{score.points},{score.wins},{score.gameID}\n")
 
     def show_top_score(self):
-        pass
+        with open('scores.txt', 'r') as f:
+            lines = f.readlines()
+    
+        scores = []
+        for line in lines:
+            values = line.strip().split(',')
+            username = values[0]
+            points = int(values[1])
+            wins = int(values[2])
+            gameID = values[3]
+            scores.append((username, wins, gameID))
+
+        scores.sort(key=lambda x: x[1], reverse=True)
+    
+        print("Top 10 Scores (Highest Wins):\n")
+        for i, (username, wins, gameID) in enumerate(scores[:10], start=1):
+            print(f"{i}. Username: {username}, Wins: {wins}, GameID: {gameID}")
 
     def save_and_reset(self, username):
         gameID = datetime.datetime.now().strftime("%Y%m%d%H%M")
@@ -113,7 +129,7 @@ class DiceGame:
             input("Press Enter to Continue!")
             self.menu(username)
         elif choice == '3':
-            return    
+            return False
         else:
             print("Invalid Input")
             self.menu(username)
