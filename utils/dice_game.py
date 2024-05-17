@@ -9,6 +9,7 @@ class DiceGame:
     wins = 0
 
     def load_scores(self):
+        self.user_score = {}
         if not os.path.exists("scores.txt"):
             with open('scores.txt', 'w') as f:
                 f.write("")
@@ -26,7 +27,7 @@ class DiceGame:
                         self.user_score[username].append(Score(username, points, wins, gameID))
 
     def save_scores(self):
-        with open('scores.txt', 'a') as f:
+        with open('scores.txt', 'w') as f:
             for scores in self.user_score.values():
                 for score in scores:
                     f.write(f"{score.username},{score.points},{score.wins},{score.gameID}\n")
@@ -34,7 +35,7 @@ class DiceGame:
     def show_top_score(self):
         with open('scores.txt', 'r') as f:
             lines = f.readlines()
-    
+
         scores = []
         for line in lines:
             values = line.strip().split(',')
@@ -42,20 +43,24 @@ class DiceGame:
             points = int(values[1])
             wins = int(values[2])
             gameID = values[3]
-            scores.append((username, wins, gameID))
+            scores.append((username, points, wins, gameID))
 
         scores.sort(key=lambda x: x[1], reverse=True)
-    
+
         print("Top 10 Scores (Highest Wins):\n")
-        for i, (username, wins, gameID) in enumerate(scores[:10], start=1):
-            print(f"{i}. Username: {username}, Wins: {wins}, GameID: {gameID}")
+        for i, (username, points, wins, gameID) in enumerate(scores[:10], start=1):
+            print(f"{i}. Username: {username}, Wins: {wins}, Points: {points}, GameID: {gameID}")
 
     def save_and_reset(self, username):
         gameID = datetime.datetime.now().strftime("%Y%m%d%H%M")
-        self.user_score[username] = [Score(username, self.points, self.wins, gameID)]
+        if username in self.user_score:
+            self.user_score[username].append(Score(username, self.points, self.wins, gameID))
+        else:
+            self.user_score[username] = [Score(username, self.points, self.wins, gameID)]
         self.save_scores()
         self.points = 0
         self.wins = 0
+
 
     def play_game(self, username):
         input("Press Enter to Start the Game!")
@@ -113,24 +118,27 @@ class DiceGame:
         return True
 
     def menu(self, username):
-        self.load_scores()
-        print(f"Welcome {username}!\n")
-        print("Menu: ")
-        print("1. Start Game")
-        print("2. Show top scores")
-        print("3. Logout")
+        while True:
+            self.load_scores()
+            print(f"Welcome {username}!\n")
+            print("Menu: ")
+            print("1. Start Game")
+            print("2. Show top scores")
+            print("3. Logout")
 
-        choice = input("Choose Action: ")
+            choice = input("Choose Action: ")
 
-        if choice == '1':
-            self.play_game(username)
-        elif choice == '2':
-            self.show_top_score()
-            input("Press Enter to Continue!")
-            self.menu(username)
-        elif choice == '3':
-            return False
-        else:
-            print("Invalid Input")
-            self.menu(username)
+            if choice == '1':
+                self.play_game(username)
+            elif choice == '2':
+                self.show_top_score()
+                input("Press Enter to Continue!")
+                continue
+            elif choice == '3':
+                break
+            else:
+                print("Invalid Input")
+        print("Logged Out Successfully!\n")
+        return False
+
         

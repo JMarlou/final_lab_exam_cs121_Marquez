@@ -23,18 +23,6 @@ class UserManager:
             for username, password in self.user_accounts.items():
                 f.write(f'{username},{password.password}\n')
 
-    def validate_username(self, username, password):
-        if username in self.user_accounts:
-            if self.user_accounts[username].password == password:
-                print("Login Successfully\n")
-                return True
-            else:
-                print("Wrong Password!")
-                return False
-        else:
-            print("Invalid Username")
-            return False
-
     def register(self):
         username = input("Enter Username(at least 4 characters): ")
         if len(username) < 4:
@@ -58,11 +46,15 @@ class UserManager:
         username = input("Enter Username: ")
         password = input("Enter Password: ")
         
-        if self.validate_username(username, password):
-            dice.menu(username)
-            return True
+        if username in self.user_accounts:
+            if self.user_accounts[username].password == password:
+                print("Login Successfully\n")
+                dice.menu(username)
+                return True
+            else:
+                print("Wrong Password!")
         else:
-            return False
+            print("Invalid Username")
 
 
     
