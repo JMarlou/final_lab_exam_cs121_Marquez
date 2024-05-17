@@ -17,37 +17,63 @@ class DiceGame:
                 for line in f:
                     values = line.strip().split(',')
                     username = values[0]
-                    points = values[1]
-                    wins = values[2]
+                    points = int(values[1])
+                    wins = int(values[2])
                     gameID = values[3]
-                    self.user_score[username] = Score(points, wins, gameID)
-                    
+                    if username not in self.user_score:
+                        self.user_score[username] = []
+                    self.user_score[username].append(Score(username, points, wins, gameID))
+
     def save_scores(self):
         with open('scores.txt', 'w') as f:
-            for score in self.user_score.values():
-                f.write(f"{score.username}, {score.points}, {score.wins}, {score.gameID}\n")
+            for scores in self.user_score.values():
+                if Score in scores:
+                    f.write(f"{Score.username}, {Score.points}, {Score.wins}, {Score.gameID}\n")
     
     def show_top_score(self, username):
         pass
 
+    def save_and_reset(self, username):
+        gameID = datetime.datetime.now().strftime("%Y%m%d%H%M")
+        if username not in self.user_score:
+            self.user_score[username] = []
+        self.user_score[username].append(Score(username, self.points, self.wins, gameID))
+        self.save_scores()
+        self.points = 0
+        self.wins = 0
+
     def play_game(self, username):
-        input()
+        input("Press Enter to Start the Game!")
         while True:
-            if self.dice(username) == True:
-                continue
+            if self.dice(username):
+                print("Would you like to play again? (yes/no): ")
+                play_again = input().lower()
+                if play_again == "yes":
+                    continue
+                elif play_again == "no":
+                    self.save_and_reset(username)
+                    print("Thanks for playing!\n")
+                    self.menu(username)
+                    break
+                else:
+                    print("Invalid Input!\n")
+                    self.menu(username)
+                    break
             else:
-                return
+                break
 
     def dice(self, username):
         RoundWin = 0
         RoundLoss = 0
-        print("Starting Game.....")
-        input()
+        print("Starting Game.....\n")
+        input("Press Enter to Roll the Dice\n")
+
         while RoundWin < 2 and RoundLoss < 2:
             user = random.randint(1,6)
             computer = random.randint(1,6)
             print(f"{username} rolled a {user}")
             print(f"Computer rolled a {computer}")
+
             if user < computer:
                 print("You lost this round!")
                 RoundLoss += 1
@@ -55,41 +81,25 @@ class DiceGame:
                 print("You won this round!")
                 RoundWin += 1
                 self.points += 1
-            elif user == computer:
+            else:
                 print("It's a tie this round!")
-            input()  
-        else:
-            if RoundWin == 2:
-                print(f"Congratulations, {username}! You won the game!")
-                self.points += 3
-                self.wins += 1
-            elif RoundLoss == 2:
-                print(f"Sorry, {username}. You lost the game.")
-                if self.wins == 0:
-                    print("Game over. You didn't win any stages.")
-                    return False
-                elif self.wins >= 1:
-                    print(f"Game over. You won {self.wins} stage(s).")
-                    game_ID = datetime.datetime.now().strftime("%Y%m%d%H%M")
-                    self.user_score[username]=(Score(username, self.points, self.wins, game_ID ))
-                    self.save_scores()
-                    self.points = 0
-                    self.wins = 0
-                    return False
+
+            input("Press Enter to Continue!\n")  
+
+        if RoundWin == 2:
+            print(f"Congratulations, {username}! You won the game!")
+            self.points += 3
+            self.wins += 1
+        elif RoundLoss == 2:
+            print(f"Sorry, {username}. You lost the game.")
+            if self.wins == 0:
+                print("Game over. You didn't win any stages.")
+            else:
+                print(f"Game over. You won {self.wins} stage(s).")
 
         print(f"You have won {self.wins} stages so far.")
         print(f"You currently have {self.points} points so far.")
-        print("Would you like to play again? (yes/no): ")
-        play_again = input().lower()
-        if play_again == "yes":
-            self.dice(username)
-        elif play_again == "no":
-            print("Thanks for playing!\n")
-            self.menu(username)
-        else:
-            print("Invalid Input!\n")
-            self.menu(username)
-        self.save_scores()
+        return True
 
     def menu(self, username):
         self.load_scores()
@@ -105,7 +115,7 @@ class DiceGame:
             self.play_game(username)
         elif choice == '2':
             self.show_top_score(username)
-            input()
+            input("Press Enter to Continue!")
             self.menu(username)
         elif choice == '3':
             return    

@@ -1,3 +1,4 @@
+import os
 from .user import User
 from .dice_game import DiceGame
 dice = DiceGame()
@@ -6,15 +7,16 @@ class UserManager:
     user_accounts = {}
 
     def load_user(self):
-        try:
+        if not os.path.exists("users.txt"):
+            with open('users.txt', 'w') as f:
+                f.write("")
+       
+        else:
             with open("users.txt", 'r') as f:
                 for line in f:
                     user = line.strip().split(',')
                     self.user_accounts[user[0]] = User(user[0], user[1])
-        except FileNotFoundError:
-            print("User file not found.")
-        except Exception as e:
-            print(f"Error loading users: {e}")
+
         
     def save_users(self):
         with open('users.txt', 'w') as f:
