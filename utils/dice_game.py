@@ -8,7 +8,7 @@ class DiceGame:
     points = 0
     wins = 0
 
-    def load_scores(self): 
+    def load_scores(self):
         if not os.path.exists("scores.txt"):
             with open('scores.txt', 'w') as f:
                 f.write("")
@@ -16,28 +16,27 @@ class DiceGame:
             with open('scores.txt', 'r') as f:
                 for line in f:
                     values = line.strip().split(',')
-                    username = values[0]
-                    points = int(values[1])
-                    wins = int(values[2])
-                    gameID = values[3]
-                    if username not in self.user_score:
-                        self.user_score[username] = []
-                    self.user_score[username].append(Score(username, points, wins, gameID))
+                    if len(values) == 4:
+                        username = values[0]
+                        points = int(values[1])
+                        wins = int(values[2])
+                        gameID = values[3]
+                        if username not in self.user_score:
+                            self.user_score[username] = []
+                        self.user_score[username].append(Score(username, points, wins, gameID))
 
     def save_scores(self):
         with open('scores.txt', 'w') as f:
             for scores in self.user_score.values():
-                if Score in scores:
-                    f.write(f"{Score.username}, {Score.points}, {Score.wins}, {Score.gameID}\n")
-    
-    def show_top_score(self, username):
+                for score in scores:
+                    f.write(f"{score.username},{score.points},{score.wins},{score.gameID}\n")
+
+    def show_top_score(self):
         pass
 
     def save_and_reset(self, username):
         gameID = datetime.datetime.now().strftime("%Y%m%d%H%M")
-        if username not in self.user_score:
-            self.user_score[username] = []
-        self.user_score[username].append(Score(username, self.points, self.wins, gameID))
+        self.user_score[username] = [Score(username, self.points, self.wins, gameID)]
         self.save_scores()
         self.points = 0
         self.wins = 0
@@ -87,15 +86,11 @@ class DiceGame:
             input("Press Enter to Continue!\n")  
 
         if RoundWin == 2:
-            print(f"Congratulations, {username}! You won the game!")
+            print(f"Congratulations, {username}! You won the stage!")
             self.points += 3
             self.wins += 1
         elif RoundLoss == 2:
-            print(f"Sorry, {username}. You lost the game.")
-            if self.wins == 0:
-                print("Game over. You didn't win any stages.")
-            else:
-                print(f"Game over. You won {self.wins} stage(s).")
+            print(f"Sorry, {username}. You lost the stage.")
 
         print(f"You have won {self.wins} stages so far.")
         print(f"You currently have {self.points} points so far.")
@@ -114,7 +109,7 @@ class DiceGame:
         if choice == '1':
             self.play_game(username)
         elif choice == '2':
-            self.show_top_score(username)
+            self.show_top_score()
             input("Press Enter to Continue!")
             self.menu(username)
         elif choice == '3':
